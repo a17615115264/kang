@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动按钮页面</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            /* 设置按钮的层级，确保在花朵之上 */
+            z-index: 1;
+        }
+
+        /* 玫瑰花样式 */
+        .rose {
+            position: absolute;
+            /* 减小花朵的宽度 */
+            width: 50px;
+            /* 减小花朵的高度 */
+            height: 50px;
+            animation: fadeInOut 10s ease-out forwards;
+            /* 设置花朵的层级，确保在按钮之下 */
+            z-index: 0;
+        }
+
+        .rose-petal {
+            position: absolute;
+            /* 减小花瓣的宽度 */
+            width: 30px;
+            /* 减小花瓣的高度 */
+            height: 30px;
+            background-color: red;
+            border-radius: 50% 0 50% 50%;
+            transform-origin: bottom right;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button id="morningButton">早上好，郭大宝</button>
+    <div id="secondButtonGroup" style="display: none;">
+        <button id="missQuestionButton">想我了没有</button>
+        <div id="responseButtons" style="display: none;">
+            <button id="yesButton">想</button>
+            <button id="noButton">不想</button>
+        </div>
+    </div>
+    <div id="message" style="display: none;"></div>
+
+    <script>
+        const morningButton = document.getElementById('morningButton');
+        const secondButtonGroup = document.getElementById('secondButtonGroup');
+        const missQuestionButton = document.getElementById('missQuestionButton');
+        const responseButtons = document.getElementById('responseButtons');
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const messageDiv = document.getElementById('message');
+
+        morningButton.addEventListener('click', function () {
+            secondButtonGroup.style.display = 'block';
+            missQuestionButton.style.display = 'block';
+            responseButtons.style.display = 'none';
+            messageDiv.style.display = 'none';
+        });
+
+        missQuestionButton.addEventListener('click', function () {
+            responseButtons.style.display = 'block';
+        });
+
+        yesButton.addEventListener('click', function () {
+            messageDiv.style.display = 'block';
+            messageDiv.textContent = '嘿嘿 ，我也想你了';
+            createRoses();
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+                responseButtons.style.display = 'none';
+            }, 3000);
+        });
+
+        let noClicks = 0;
+        noButton.addEventListener('click', function () {
+            messageDiv.style.display = 'block';
+            if (noClicks === 0) {
+                messageDiv.textContent = '真的吗';
+            } else if (noClicks === 1) {
+                messageDiv.textContent = '假的吧';
+            } else if (noClicks === 2) {
+                messageDiv.textContent = '我可想你了';
+            } else {
+                messageDiv.style.display = 'none';
+                responseButtons.style.display = 'none';
+            }
+            noClicks = (noClicks + 1) % 4;
+        });
+
+        // 创建玫瑰花庆祝效果
+        function createRoses() {
+            const numRoses = 5;
+            for (let i = 0; i < numRoses; i++) {
+                const rose = document.createElement('div');
+                rose.classList.add('rose');
+                rose.style.left = Math.random() * window.innerWidth + 'px';
+                rose.style.top = Math.random() * window.innerHeight + 'px';
+
+                // 创建花瓣
+                for (let j = 0; j < 5; j++) {
+                    const petal = document.createElement('div');
+                    petal.classList.add('rose-petal');
+                    petal.style.transform = `rotate(${j * 72}deg)`;
+                    rose.appendChild(petal);
+                }
+
+                document.body.appendChild(rose);
+
+                // 玫瑰花动画结束后移除元素
+                rose.addEventListener('animationend', () => {
+                    rose.remove();
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
